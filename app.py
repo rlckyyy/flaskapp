@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import requests
 from flask import Flask, redirect, render_template, request
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -15,6 +16,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
+
 # Модель данных для таблицы авторов
 class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -27,6 +29,21 @@ class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100), nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('author.id', ondelete='CASCADE'), nullable=False)
+
+
+@app.route('/some_flask_route')
+def some_flask_function():
+    # ... ваша логика
+
+    # Пример запроса к FastAPI для получения токена
+    response = requests.post("http://127.0.0.1:8000/token", data={"username": "user", "password": "password"})
+    if response.status_code == 200:
+        token = response.json()["access_token"]
+        # Используйте токен для дальнейшей работы
+
+    # ... ваша логика
+
+    return "Some response"
 
 
 # Функция для добавления авторов из CSV-файла в базу данных
